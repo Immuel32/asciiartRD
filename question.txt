@@ -1,0 +1,225 @@
+Question 2: String Art Converter
+
+
+Create a function StringToArt that converts a string into ASCII art using only pipe |, underscore _, forward slash /, backslash \, and space characters. The output should look like simple line art.
+
+Requirements:
+
+Function signature: func StringToArt(input string) string
+
+Support digits 0-9 only
+
+Each digit should be 5 characters wide and 5 lines tall
+
+Digits should be joined without spacing
+
+Handle multiple lines in input separated by \n
+
+Return empty string for invalid input
+
+File Structure:
+
+ascii-art/
+├── main.go
+├── converter/
+│   ├── converter.go
+│   └── converter_test.go
+
+
+
+
+
+
+
+Question 1: Simple Character Pattern Generator
+
+
+Write a function GeneratePattern that creates a simple ASCII art representation for a single character using basic shapes. Each character should be represented as an 8-line string slice with only 3 different characters: . (dot), # (hash), and  (space).
+
+Requirements:
+
+Function signature: func GeneratePattern(c rune) []string
+
+Only handle uppercase letters A-Z
+
+Each letter must be exactly 6 characters wide
+
+Pattern must be recognizable (doesn't need to be perfect)
+
+Return empty slice for unsupported characters
+
+Use a simple mapping approach (map[rune][]string)
+
+File Structure:
+
+
+ascii-art/
+├── main.go
+├── generator/
+│   ├── generator.go
+│   └── generator_test.go
+
+
+
+
+
+Question 3: Programmatic Font Generator
+
+
+
+Write a function GenerateFont that creates a complete mapping of printable ASCII characters (32-126) to their 8-line ASCII art representation using a mathematical/algorithmic approach instead of storing all characters. The generated font should use *, ., and space characters.
+
+
+Requirements:
+
+
+Function signature: func GenerateFont() map[rune][]string
+
+
+Generate all 95 printable ASCII characters (space to tilde)
+
+
+Each character should be 8 lines tall and 8 characters wide
+
+
+Use algorithms based on character properties (vowels vs consonants, ascenders, descenders, etc.)
+
+
+Characters should be somewhat distinguishable
+
+
+Include proper spacing rules
+
+
+File Structure:
+
+
+ascii-art/
+
+├── main.go
+
+├── font/
+
+│   ├── font.go
+
+│   └── font_test.go
+
+
+
+
+Question 4: Dynamic ASCII Art Builder
+
+
+
+Create an ArtBuilder type that constructs ASCII art dynamically using a builder pattern. It should support adding text with different "styles" (bold, italic, outline) through method chaining, all generated programmatically.
+
+
+Requirements:
+
+
+Create ArtBuilder struct with methods:
+
+
+NewArtBuilder() constructor
+
+
+AddText(text string) returns *ArtBuilder
+
+
+SetStyle(style string) returns *ArtBuilder (supports "bold", "italic", "outline", "normal")
+
+
+Build() returns string
+
+
+Bold: double the
+
+ width of characters
+
+
+Italic: add forward slant to characters
+
+
+Outline: add border around each character
+
+
+Must support method chaining
+
+
+File Structure:
+
+
+ascii-art/
+
+├── main.go
+
+├── builder/
+
+│   ├── builder.go
+
+│   └── builder_test.go
+
+
+
+
+Question 5: ASCII Art Animation System
+
+
+
+Build a system that creates simple ASCII art animations by generating frames programmatically. The system should support creating animations with transitions, rotations, and simple movements.
+
+
+Requirements:
+
+
+Create Animation struct with:
+
+
+NewAnimation(text string, frames int) constructor
+
+
+GenerateSpinFrames() creates rotation effect
+
+
+GenerateWaveFrames() creates wave effect
+
+
+GenerateZoomFrames() creates zoom in/out effect
+
+
+GetFrame(index int) string returns specific frame
+
+
+Play() string returns all frames with delay markers
+
+
+Each frame should be exactly 10 lines tall
+
+
+Animations must loop seamlessly
+
+
+All ASCII art generated programmatically (no external files)
+
+
+File Structure:
+
+ascii-art/
+
+├── main.go
+
+├── animation/
+
+│   ├── animation.go
+
+│   └── animation_test.go
+
+└── effects/
+
+    ├── spin.go
+
+    ├── wave.go
+
+    ├── zoom.go
+
+    └── effects_test.go
