@@ -67,7 +67,7 @@ func render(text, style string, row int) string {
 	case "outline":
 		return "|" + text + "|"
 
-	default: // normal
+	default:
 		return text
 	}
 }
