@@ -1,91 +1,73 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 )
 
-type ArtBuilder struct {
-	texts  []string
-	styles []string
+type segment struct {
+	text  string
+	style string
 }
 
-func NewArtBuilder() *ArtBuilder { return &ArtBuilder{} }
+type ArtBuilder struct {
+	parts []segment
+}
+
+func NewArtBuilder() *ArtBuilder {
+	return &ArtBuilder{}
+}
 
 func (ab *ArtBuilder) AddText(text string) *ArtBuilder {
-	ab.texts = append(ab.texts, text)
-	ab.styles = append(ab.styles, "normal")
+	ab.parts = append(ab.parts, segment{
+		text:  text,
+		style: "normal",
+	})
 	return ab
 }
 
 func (ab *ArtBuilder) SetStyle(style string) *ArtBuilder {
-	if len(ab.styles) == 0 {
+	if len(ab.parts) == 0 {
 		panic("SetStyle called before AddText")
 	}
+
 	switch style {
 	case "normal", "bold", "italic", "outline":
-		ab.styles[len(ab.styles)-1] = style
+		ab.parts[len(ab.parts)-1].style = style
 	default:
-		panic(fmt.Sprintf("Unsupported style: %s", style))
+		panic("unsupported style")
 	}
+
 	return ab
 }
 
 func (ab *ArtBuilder) Build() string {
-	if len(ab.texts) == 0 {
+	if len(ab.parts) == 0 {
 		return ""
 	}
+
 	lines := make([]string, 8)
-	for i, txt := range ab.texts {
-		style := ab.styles[i]
-		block := render(txt, style)
-		for r := 0; r < 8; r++ {
-			lines[r] += block[r]
+
+	for _, p := range ab.parts {
+		for row := 0; row < 8; row++ {
+			lines[row] += render(p.text, p.style, row)
 		}
 	}
+
 	return strings.Join(lines, "\n") + "\n"
 }
 
-func render(text, style string) []string {
-	out := make([]string, 8)
-	for r := 0; r < 8; r++ {
-		line := ""
-		for _, ch := range text {
-			base := baseChar(ch, r)
-			switch style {
-			case "bold":
-				line += double(base)
-			case "italic":
-				line += strings.Repeat(" ", r/2) + base
-			case "outline":
-				line += "|" + base[:len(base)-1] + "|"
-			default:
-				line += base
-			}
-		}
-		out[r] = line
-	}
-	return out
-}
+func render(text, style string, row int) string {
+	switch style {
+	case "bold":
+		return strings.Repeat(text, 2)
 
-func baseChar(_ rune, row int) string {
-	pattern := []string{
-		"*    * ",
-		"*    * ",
-		"****** ",
-		"*    * ",
-		"*    * ",
-		"*    * ",
-		"*    * ",
-		"       ",
-	}
-	return pattern[row]
-}
+	case "italic":
+		return strings.Repeat(" ", row/2+1) + text
 
-func double(s string) string {
-	res := ""
-	for _, r := range s {
-		res += string(r) + string(r)
+	case "outline":
+		return "|" + text + "|"
+
+	default: // normal
+		return text
 	}
-	return res
 }
