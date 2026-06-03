@@ -1,95 +1,85 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 )
 
 type Animation struct {
-	text   string
-	frames int
-	data   []string
+	text       string
+	frameCount int
+	frames     []string
 }
 
-func NewAnimation(text string, frames int) *Animation {
+func NewAnimation(text string, frameCount int) *Animation {
 	return &Animation{
-		text:   text,
-		frames: frames,
-		data:   make([]string, frames),
+		text:       text,
+		frameCount: frameCount,
+		frames:     make([]string, frameCount),
 	}
-}
-
-func padToTenLines(lines []string) string {
-	for len(lines) < 10 {
-		lines = append(lines, strings.Repeat(" ", len(lines[0])))
-	}
-	return strings.Join(lines, "\n")
 }
 
 func (a *Animation) GenerateSpinFrames() {
-	for i := 0; i < a.frames; i++ {
+	chars := []string{"|", "/", "-", "\\"}
 
-		shift := i % len(a.text)
-		line := a.text[shift:] + a.text[:shift]
-		lines := []string{}
-		for j := 0; j < 10; j++ {
-			lines = append(lines, line)
-		}
-		a.data[i] = padToTenLines(lines)
+	for i := 0; i < a.frameCount; i++ {
+		symbol := chars[i%len(chars)]
+		a.frames[i] = makeFrame(symbol + " " + a.text + " " + symbol)
 	}
 }
 
 func (a *Animation) GenerateWaveFrames() {
-	for i := 0; i < a.frames; i++ {
-		lines := []string{}
-		for j := 0; j < 10; j++ {
-
-			offset := (i + j) % (len(a.text) + 1)
-			line := strings.Repeat(" ", offset) + a.text
-			lines = append(lines, line)
-		}
-		a.data[i] = padToTenLines(lines)
+	for i := 0; i < a.frameCount; i++ {
+		padding := strings.Repeat(" ", i)
+		a.frames[i] = makeFrame(padding + a.text)
 	}
 }
+
 func (a *Animation) GenerateZoomFrames() {
-	for i := 0; i < a.frames; i++ {
-		scale := 1 + i%3 // zoom levels
-		line := strings.Repeat(a.text+" ", scale)
-		lines := []string{}
-		for j := 0; j < 10; j++ {
-			lines = append(lines, line)
+	for i := 0; i < a.frameCount; i++ {
+		text := a.text
+
+		for j := 0; j < i; j++ {
+			text += "!"
 		}
-		a.data[i] = padToTenLines(lines)
+
+		a.frames[i] = makeFrame(text)
 	}
 }
 
 func (a *Animation) GetFrame(index int) string {
-	if a.frames == 0 {
+	if len(a.frames) == 0 {
 		return ""
 	}
-	return a.data[index%a.frames]
+
+	return a.frames[index%len(a.frames)]
 }
 
 func (a *Animation) Play() string {
-	var sb strings.Builder
-	for i := 0; i < a.frames; i++ {
-		sb.WriteString(fmt.Sprintf("=== Frame %d ===\n", i))
-		sb.WriteString(a.GetFrame(i))
-		sb.WriteString("\n\n")
+	var out strings.Builder
+
+	for i, frame := range a.frames {
+		out.WriteString("=== Frame ")
+		out.WriteString(string(rune('0' + i)))
+		out.WriteString(" ===\n")
+		out.WriteString(frame)
+		out.WriteString("\n")
 	}
-	return sb.String()
+
+	return out.String()
 }
 
-func main() {
-	anim := NewAnimation("HELLO", 4)
-	anim.GenerateSpinFrames()
-	fmt.Println(anim.Play())
+func makeFrame(content string) string {
+	const width = 20
+	lines := make([]string, 10)
 
-	anim2 := NewAnimation("WAVE", 6)
-	anim2.GenerateWaveFrames()
-	fmt.Println(anim2.Play())
+	line := content
+	if len(line) < width {
+		line += strings.Repeat(" ", width-len(line))
+	}
 
-	anim3 := NewAnimation("ZOOM", 5)
-	anim3.GenerateZoomFrames()
-	fmt.Println(anim3.Play())
+	for i := 0; i < 10; i++ {
+		lines[i] = line
+	}
+
+	return strings.Join(lines, "\n") + "\n"
 }
